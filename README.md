@@ -48,7 +48,7 @@ Empresas precisam saber:
 
 ```
 UptimeChangeMonitor/
-├── src/
+├── src/                                   # Backend (.NET)
 │   ├── UptimeChangeMonitor.API/          # Web API
 │   │   ├── Controllers/                  # Endpoints REST
 │   │   ├── Extensions/                   # Extension Methods
@@ -78,8 +78,24 @@ UptimeChangeMonitor/
 │       ├── ChangeDetectionWorker/        # Worker de Change Detection
 │       └── Shared/                       # Código compartilhado entre workers
 │
+├── frontend/                              # Frontend (Next.js + TypeScript)
+│   ├── app/                              # Next.js App Router
+│   │   ├── monitors/                     # Páginas de monitores
+│   │   └── layout.tsx                    # Layout raiz
+│   ├── components/                       # Componentes React
+│   │   ├── Layout/                       # Header, Sidebar, Footer
+│   │   ├── Monitor/                      # Componentes de Monitor
+│   │   ├── Charts/                       # Gráficos (Recharts)
+│   │   └── Common/                       # Componentes reutilizáveis
+│   ├── lib/                              # Bibliotecas e utilitários
+│   │   ├── api/                          # Cliente API (Axios)
+│   │   └── store/                        # Estado global (Zustand)
+│   ├── hooks/                            # Custom React Hooks
+│   ├── types/                            # Definições TypeScript
+│   └── utils/                            # Funções utilitárias
+│
 ├── docker-compose.yml                    # PostgreSQL + RabbitMQ
-└── UptimeChangeMonitor.sln              # Solution File
+└── UptimeChangeMonitor.sln              # Solution File (.NET)
 ```
 
 ## 🚀 Como Executar
@@ -106,6 +122,12 @@ UptimeChangeMonitor/
    ```bash
    cd src/UptimeChangeMonitor.Workers
    dotnet run
+   ```
+6. Execute o Frontend:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
    ```
 
 ## 📝 MVP
