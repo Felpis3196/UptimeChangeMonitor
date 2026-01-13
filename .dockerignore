@@ -1,0 +1,11 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+**/node_modules
+**/.next
+docker-compose.yml
+Dockerfile
+.dockerignore
+README.md
+*.md

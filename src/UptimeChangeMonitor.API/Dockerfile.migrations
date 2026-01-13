@@ -1,0 +1,30 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migrations
+WORKDIR /src
+
+# Install PostgreSQL client and bash (bash should be available, but ensuring it)
+RUN apt-get update && \
+    apt-get install -y postgresql-client bash && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy csproj files and restore dependencies
+COPY ["src/UptimeChangeMonitor.API/UptimeChangeMonitor.API.csproj", "src/UptimeChangeMonitor.API/"]
+COPY ["src/UptimeChangeMonitor.Application/UptimeChangeMonitor.Application.csproj", "src/UptimeChangeMonitor.Application/"]
+COPY ["src/UptimeChangeMonitor.Domain/UptimeChangeMonitor.Domain.csproj", "src/UptimeChangeMonitor.Domain/"]
+COPY ["src/UptimeChangeMonitor.Infrastructure/UptimeChangeMonitor.Infrastructure.csproj", "src/UptimeChangeMonitor.Infrastructure/"]
+
+RUN dotnet restore "src/UptimeChangeMonitor.API/UptimeChangeMonitor.API.csproj"
+
+# Copy everything else (this includes the scripts folder)
+COPY . .
+
+# Install dotnet-ef tool
+RUN dotnet tool install --global dotnet-ef --version 8.0.0
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Make script executable (it should already be copied by COPY . .)
+RUN chmod +x /src/src/UptimeChangeMonitor.API/scripts/apply-migrations.sh
+
+WORKDIR "/src/src/UptimeChangeMonitor.API"
+
+# Use bash explicitly to execute the script
+ENTRYPOINT ["/bin/bash", "/src/src/UptimeChangeMonitor.API/scripts/apply-migrations.sh"]

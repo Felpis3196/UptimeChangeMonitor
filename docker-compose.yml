@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -17,6 +15,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - uptime-network
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -34,7 +34,78 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - uptime-network
+
+  migrations:
+    build:
+      context: .
+      dockerfile: src/UptimeChangeMonitor.API/Dockerfile.migrations
+    container_name: uptime_migrations
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=UptimeChangeMonitor;Username=postgres;Password=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - uptime-network
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: src/UptimeChangeMonitor.API/Dockerfile
+    container_name: uptime_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=UptimeChangeMonitor;Username=postgres;Password=postgres
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    networks:
+      - uptime-network
+
+  workers:
+    build:
+      context: .
+      dockerfile: src/UptimeChangeMonitor.Workers/Dockerfile
+    container_name: uptime_workers
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=UptimeChangeMonitor;Username=postgres;Password=postgres
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+      - RabbitMQ__QueueNames__UptimeCheck=uptime_check_queue
+      - RabbitMQ__QueueNames__ChangeDetection=change_detection_queue
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
+    networks:
+      - uptime-network
 
 volumes:
   postgres_data:
   rabbitmq_data:
+
+networks:
+  uptime-network:
+    driver: bridge
