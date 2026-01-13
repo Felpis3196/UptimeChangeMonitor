@@ -5,7 +5,17 @@ using UptimeChangeMonitor.API.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Garantir que todas as propriedades sejam serializadas
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.WriteIndented = true;
+        // Manter nomes originais (PascalCase) para compatibilidade com frontend
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        // Incluir propriedades com valores padrão (strings vazias, etc)
+        options.JsonSerializerOptions.IncludeFields = false;
+    });
 
 // API Versioning
 var apiVersioningBuilder = builder.Services.AddApiVersioning(options =>

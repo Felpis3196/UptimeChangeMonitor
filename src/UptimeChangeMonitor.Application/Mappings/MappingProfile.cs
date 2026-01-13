@@ -9,8 +9,22 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Monitor mappings
-        CreateMap<MonitorEntity, MonitorDto>().ReverseMap();
+        // Monitor mappings with computed properties
+        CreateMap<MonitorEntity, MonitorDto>()
+            .AfterMap((src, dest) =>
+            {
+                dest.StatusDescription = GetMonitorStatusDescription(src.Status);
+                dest.CheckIntervalFormatted = FormatCheckInterval(src.CheckIntervalSeconds);
+                dest.CreatedAtFormatted = src.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss UTC");
+                dest.CreatedAtTimeAgo = GetTimeAgo(src.CreatedAt);
+                dest.UpdatedAtFormatted = src.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss UTC");
+                dest.UpdatedAtTimeAgo = GetTimeAgo(src.UpdatedAt);
+                if (src.LastCheckedAt.HasValue)
+                {
+                    dest.LastCheckedAtFormatted = src.LastCheckedAt.Value.ToString("yyyy-MM-dd HH:mm:ss UTC");
+                    dest.LastCheckedAtTimeAgo = GetTimeAgo(src.LastCheckedAt.Value);
+                }
+            });
         CreateMap<CreateMonitorDto, MonitorEntity>();
         CreateMap<UpdateMonitorDto, MonitorEntity>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -19,23 +33,25 @@ public class MappingProfile : Profile
 
         // UptimeCheck mappings with computed properties
         CreateMap<UptimeChangeMonitor.Domain.Entities.UptimeCheck, UptimeCheckDto>()
-            .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => GetUptimeStatusDescription(src.Status)))
-            .ForMember(dest => dest.IsOnline, opt => opt.MapFrom(src => src.Status == UptimeStatus.Online))
-            .ForMember(dest => dest.ResponseTimeFormatted, opt => opt.MapFrom(src => FormatResponseTime(src.ResponseTimeMs)))
-            .ForMember(dest => dest.StatusCodeDescription, opt => opt.MapFrom(src => GetStatusCodeDescription(src.StatusCode)))
-            .ForMember(dest => dest.CheckedAtFormatted, opt => opt.MapFrom(src => src.CheckedAt.ToString("yyyy-MM-dd HH:mm:ss UTC")))
-            .ForMember(dest => dest.TimeAgo, opt => opt.MapFrom(src => GetTimeAgo(src.CheckedAt)))
-            .ReverseMap()
-            .ForMember(dest => dest.Monitor, opt => opt.Ignore());
+            .AfterMap((src, dest) =>
+            {
+                dest.StatusDescription = GetUptimeStatusDescription(src.Status);
+                dest.IsOnline = src.Status == UptimeStatus.Online;
+                dest.ResponseTimeFormatted = FormatResponseTime(src.ResponseTimeMs);
+                dest.StatusCodeDescription = GetStatusCodeDescription(src.StatusCode);
+                dest.CheckedAtFormatted = src.CheckedAt.ToString("yyyy-MM-dd HH:mm:ss UTC");
+                dest.TimeAgo = GetTimeAgo(src.CheckedAt);
+            });
 
         // ChangeDetection mappings with computed properties
         CreateMap<UptimeChangeMonitor.Domain.Entities.ChangeDetection, ChangeDetectionDto>()
-            .ForMember(dest => dest.ChangeTypeDescription, opt => opt.MapFrom(src => GetChangeTypeDescription(src.ChangeType)))
-            .ForMember(dest => dest.HasSignificantChange, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.ChangeDescription)))
-            .ForMember(dest => dest.DetectedAtFormatted, opt => opt.MapFrom(src => src.DetectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC")))
-            .ForMember(dest => dest.TimeAgo, opt => opt.MapFrom(src => GetTimeAgo(src.DetectedAt)))
-            .ReverseMap()
-            .ForMember(dest => dest.Monitor, opt => opt.Ignore());
+            .AfterMap((src, dest) =>
+            {
+                dest.ChangeTypeDescription = GetChangeTypeDescription(src.ChangeType);
+                dest.HasSignificantChange = !string.IsNullOrEmpty(src.ChangeDescription);
+                dest.DetectedAtFormatted = src.DetectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC");
+                dest.TimeAgo = GetTimeAgo(src.DetectedAt);
+            });
     }
 
     private static string GetUptimeStatusDescription(UptimeStatus status)
@@ -122,5 +138,31 @@ public class MappingProfile : Profile
         
         var years = (int)(timeSpan.TotalDays / 365);
         return $"há {years} ano{(years != 1 ? "s" : "")}";
+    }
+    
+    private static string GetMonitorStatusDescription(MonitorStatus status)
+    {
+        return status switch
+        {
+            MonitorStatus.Active => "Ativo",
+            MonitorStatus.Inactive => "Inativo",
+            MonitorStatus.Paused => "Pausado",
+            _ => "Desconhecido"
+        };
+    }
+    
+    private static string FormatCheckInterval(int seconds)
+    {
+        if (seconds < 60)
+            return $"{seconds} segundo{(seconds != 1 ? "s" : "")}";
+        
+        if (seconds < 3600)
+        {
+            var minutes = seconds / 60;
+            return $"{minutes} minuto{(minutes != 1 ? "s" : "")}";
+        }
+        
+        var hours = seconds / 3600;
+        return $"{hours} hora{(hours != 1 ? "s" : "")}";
     }
 }

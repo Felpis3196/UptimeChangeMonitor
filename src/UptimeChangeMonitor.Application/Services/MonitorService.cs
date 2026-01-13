@@ -31,13 +31,23 @@ public class MonitorService : IMonitorService
     public async Task<MonitorDto?> GetByIdAsync(Guid id)
     {
         var monitor = await _monitorRepository.GetByIdAsync(id);
-        return monitor == null ? null : _mapper.Map<MonitorDto>(monitor);
+        if (monitor == null)
+            return null;
+            
+        var dto = _mapper.Map<MonitorDto>(monitor);
+        EnrichMonitorDto(dto);
+        return dto;
     }
 
     public async Task<IEnumerable<MonitorDto>> GetAllAsync()
     {
         var monitors = await _monitorRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<MonitorDto>>(monitors);
+        return monitors.Select(monitor =>
+        {
+            var dto = _mapper.Map<MonitorDto>(monitor);
+            EnrichMonitorDto(dto);
+            return dto;
+        }).ToList();
     }
 
     public async Task<MonitorDto> CreateAsync(CreateMonitorDto createDto)
@@ -60,7 +70,9 @@ public class MonitorService : IMonitorService
             _queueService.PublishChangeDetectionJob(createdMonitor.Id, createdMonitor.Url);
         }
         
-        return _mapper.Map<MonitorDto>(createdMonitor);
+        var dto = _mapper.Map<MonitorDto>(createdMonitor);
+        EnrichMonitorDto(dto);
+        return dto;
     }
 
     public async Task<MonitorDto?> UpdateAsync(Guid id, UpdateMonitorDto updateDto)
@@ -73,7 +85,9 @@ public class MonitorService : IMonitorService
         monitor.UpdatedAt = DateTime.UtcNow;
 
         await _monitorRepository.UpdateAsync(monitor);
-        return _mapper.Map<MonitorDto>(monitor);
+        var dto = _mapper.Map<MonitorDto>(monitor);
+        EnrichMonitorDto(dto);
+        return dto;
     }
 
     public async Task<bool> DeleteAsync(Guid id)
@@ -212,5 +226,47 @@ public class MonitorService : IMonitorService
         
         var years = (int)(timeSpan.TotalDays / 365);
         return $"há {years} ano{(years != 1 ? "s" : "")}";
+    }
+    
+    private static void EnrichMonitorDto(MonitorDto dto)
+    {
+        // Sempre preencher todas as propriedades formatadas
+        dto.StatusDescription = GetMonitorStatusDescription(dto.Status);
+        dto.CheckIntervalFormatted = FormatCheckInterval(dto.CheckIntervalSeconds);
+        dto.CreatedAtFormatted = dto.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss UTC");
+        dto.CreatedAtTimeAgo = GetTimeAgo(dto.CreatedAt);
+        dto.UpdatedAtFormatted = dto.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss UTC");
+        dto.UpdatedAtTimeAgo = GetTimeAgo(dto.UpdatedAt);
+        if (dto.LastCheckedAt.HasValue)
+        {
+            dto.LastCheckedAtFormatted = dto.LastCheckedAt.Value.ToString("yyyy-MM-dd HH:mm:ss UTC");
+            dto.LastCheckedAtTimeAgo = GetTimeAgo(dto.LastCheckedAt.Value);
+        }
+    }
+    
+    private static string GetMonitorStatusDescription(MonitorStatus status)
+    {
+        return status switch
+        {
+            MonitorStatus.Active => "Ativo",
+            MonitorStatus.Inactive => "Inativo",
+            MonitorStatus.Paused => "Pausado",
+            _ => "Desconhecido"
+        };
+    }
+    
+    private static string FormatCheckInterval(int seconds)
+    {
+        if (seconds < 60)
+            return $"{seconds} segundo{(seconds != 1 ? "s" : "")}";
+        
+        if (seconds < 3600)
+        {
+            var minutes = seconds / 60;
+            return $"{minutes} minuto{(minutes != 1 ? "s" : "")}";
+        }
+        
+        var hours = seconds / 3600;
+        return $"{hours} hora{(hours != 1 ? "s" : "")}";
     }
 }
