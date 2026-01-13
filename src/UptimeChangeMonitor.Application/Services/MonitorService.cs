@@ -95,7 +95,7 @@ public class MonitorService : IMonitorService
         var latestUptimeCheck = await _uptimeCheckRepository.GetLatestByMonitorIdAsync(id);
         var latestChange = await _changeDetectionRepository.GetLatestByMonitorIdAsync(id);
 
-        return new MonitorStatusDto
+        var statusDto = new MonitorStatusDto
         {
             MonitorId = monitor.Id,
             MonitorName = monitor.Name,
@@ -106,6 +106,11 @@ public class MonitorService : IMonitorService
             IsOnline = latestUptimeCheck?.Status == UptimeStatus.Online,
             LastChangeDetectedAt = latestChange?.DetectedAt
         };
+
+        // Preencher propriedades descritivas
+        FillStatusDescriptions(statusDto, latestUptimeCheck, latestChange);
+
+        return statusDto;
     }
 
     public async Task<IEnumerable<MonitorStatusDto>> GetAllStatusAsync()
@@ -118,7 +123,7 @@ public class MonitorService : IMonitorService
             var latestUptimeCheck = await _uptimeCheckRepository.GetLatestByMonitorIdAsync(monitor.Id);
             var latestChange = await _changeDetectionRepository.GetLatestByMonitorIdAsync(monitor.Id);
 
-            statusList.Add(new MonitorStatusDto
+            var statusDto = new MonitorStatusDto
             {
                 MonitorId = monitor.Id,
                 MonitorName = monitor.Name,
@@ -128,9 +133,84 @@ public class MonitorService : IMonitorService
                 LastCheckedAt = latestUptimeCheck?.CheckedAt,
                 IsOnline = latestUptimeCheck?.Status == UptimeStatus.Online,
                 LastChangeDetectedAt = latestChange?.DetectedAt
-            });
+            };
+
+            // Preencher propriedades descritivas
+            FillStatusDescriptions(statusDto, latestUptimeCheck, latestChange);
+
+            statusList.Add(statusDto);
         }
 
         return statusList;
+    }
+
+    private static void FillStatusDescriptions(
+        MonitorStatusDto statusDto,
+        Domain.Entities.UptimeCheck? latestUptimeCheck,
+        Domain.Entities.ChangeDetection? latestChange)
+    {
+        // Status description
+        if (statusDto.CurrentStatus.HasValue)
+        {
+            statusDto.StatusDescription = statusDto.CurrentStatus.Value switch
+            {
+                UptimeStatus.Online => "Online",
+                UptimeStatus.Offline => "Offline",
+                UptimeStatus.Timeout => "Timeout",
+                UptimeStatus.Error => "Erro",
+                _ => "Desconhecido"
+            };
+        }
+
+        // Response time formatted
+        if (statusDto.LastResponseTimeMs.HasValue)
+        {
+            var rt = statusDto.LastResponseTimeMs.Value;
+            statusDto.LastResponseTimeFormatted = rt < 1000 ? $"{rt}ms" : $"{rt / 1000.0:F2}s";
+        }
+
+        // Last checked at formatted
+        if (statusDto.LastCheckedAt.HasValue)
+        {
+            statusDto.LastCheckedAtFormatted = statusDto.LastCheckedAt.Value.ToString("yyyy-MM-dd HH:mm:ss UTC");
+            statusDto.TimeSinceLastCheck = GetTimeAgo(statusDto.LastCheckedAt.Value);
+        }
+
+        // Last change detected at formatted
+        if (statusDto.LastChangeDetectedAt.HasValue)
+        {
+            statusDto.LastChangeDetectedAtFormatted = statusDto.LastChangeDetectedAt.Value.ToString("yyyy-MM-dd HH:mm:ss UTC");
+            statusDto.TimeSinceLastChange = GetTimeAgo(statusDto.LastChangeDetectedAt.Value);
+            
+            // Consider recent if within last 24 hours
+            var timeSinceChange = DateTime.UtcNow - statusDto.LastChangeDetectedAt.Value;
+            statusDto.HasRecentChanges = timeSinceChange.TotalHours < 24;
+        }
+    }
+
+    private static string GetTimeAgo(DateTime dateTime)
+    {
+        var timeSpan = DateTime.UtcNow - dateTime;
+
+        if (timeSpan.TotalSeconds < 60)
+            return $"há {(int)timeSpan.TotalSeconds} segundo{(timeSpan.TotalSeconds != 1 ? "s" : "")}";
+        
+        if (timeSpan.TotalMinutes < 60)
+            return $"há {(int)timeSpan.TotalMinutes} minuto{(timeSpan.TotalMinutes != 1 ? "s" : "")}";
+        
+        if (timeSpan.TotalHours < 24)
+            return $"há {(int)timeSpan.TotalHours} hora{(timeSpan.TotalHours != 1 ? "s" : "")}";
+        
+        if (timeSpan.TotalDays < 30)
+            return $"há {(int)timeSpan.TotalDays} dia{(timeSpan.TotalDays != 1 ? "s" : "")}";
+        
+        if (timeSpan.TotalDays < 365)
+        {
+            var months = (int)(timeSpan.TotalDays / 30);
+            return $"há {months} mês{(months != 1 ? "es" : "")}";
+        }
+        
+        var years = (int)(timeSpan.TotalDays / 365);
+        return $"há {years} ano{(years != 1 ? "s" : "")}";
     }
 }
