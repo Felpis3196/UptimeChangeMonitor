@@ -1,6 +1,6 @@
 # Design da UI - Uptime Change Monitor
 
-## 🎨 Paleta de Cores
+## Paleta de Cores
 
 A interface utiliza uma paleta moderna e profissional com as seguintes cores:
 
@@ -50,7 +50,7 @@ A página principal é uma única página com rolagem contendo:
 6. **Footer**
    - Informações de copyright
 
-## 🎯 Características de Design
+## Características de Design
 
 ### Responsividade
 - Mobile-first approach
@@ -67,7 +67,7 @@ A página principal é uma única página com rolagem contendo:
 - Ícones descritivos
 - Textos legíveis
 
-## 🚀 Componentes Criados
+## Componentes Criados
 
 1. **Header** - Cabeçalho fixo com logo e status
 2. **Card** - Componente base para cards com efeitos de glow
@@ -83,7 +83,7 @@ A UI foi projetada para ser:
 - **Limpa**: Espaçamento adequado e organização clara
 - **Informativa**: Todas as informações importantes visíveis
 
-## 🔄 Próximos Passos
+## Próximos Passos
 
 1. Integração com API (endpoints do backend)
 2. Atualização em tempo real (WebSockets ou polling)

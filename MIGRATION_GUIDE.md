@@ -1,14 +1,14 @@
-# 🗄️ Guia de Migrations
+# Guia de Migrations
 
-## ⚠️ IMPORTANTE: Aplicar Migrations ANTES de usar a API
+## IMPORTANTE: Aplicar Migrations ANTES de usar a API
 
 O erro `relation "Monitors" does not exist` significa que as tabelas não foram criadas. **Sempre aplique as migrations antes de usar a API!**
 
-## 🚀 Aplicar Migrations Automaticamente (Docker)
+## Aplicar Migrations Automaticamente (Docker)
 
 O Docker Compose agora aplica migrations automaticamente na inicialização do container da API.
 
-## 📝 Como criar a primeira migration
+## Como criar a primeira migration
 
 1. Certifique-se de que o PostgreSQL está rodando:
    ```bash

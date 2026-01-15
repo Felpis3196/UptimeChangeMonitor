@@ -1,4 +1,4 @@
-# 🐳 Guia de Setup Docker
+# Guia de Setup Docker
 
 ## Pré-requisitos
 

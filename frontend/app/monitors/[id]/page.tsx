@@ -326,13 +326,13 @@ export default function MonitorDetailPage() {
               <div>
                 <p className="text-sm text-gray-400">Monitorar Uptime</p>
                 <p className="text-sm text-gray-300">
-                  {monitor.MonitorUptime ? '✓ Ativo' : '✗ Inativo'}
+                  {monitor.MonitorUptime ? 'Ativo' : 'Inativo'}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-400">Monitorar Mudanças</p>
                 <p className="text-sm text-gray-300">
-                  {monitor.MonitorChanges ? '✓ Ativo' : '✗ Inativo'}
+                  {monitor.MonitorChanges ? 'Ativo' : 'Inativo'}
                 </p>
               </div>
               {status.UptimePercentage !== undefined && (

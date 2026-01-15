@@ -1,6 +1,6 @@
-# 📌 Guia de Versionamento da API
+# Guia de Versionamento da API
 
-## 🎯 Estrutura de Versionamento
+## Estrutura de Versionamento
 
 A API utiliza **URL Versioning** com suporte a múltiplas formas de especificar a versão:
 
@@ -22,7 +22,7 @@ A API utiliza **URL Versioning** com suporte a múltiplas formas de especificar 
    X-Version: 1.0
    ```
 
-## 📁 Estrutura de Pastas
+## Estrutura de Pastas
 
 ```
 Controllers/
@@ -34,7 +34,7 @@ Controllers/
     └── ...
 ```
 
-## 🔄 Como Adicionar Nova Versão
+## Como Adicionar Nova Versão
 
 ### 1. Criar pasta da nova versão
 
@@ -53,7 +53,7 @@ Copie os controllers da V1 e ajuste:
 
 Faça as alterações necessárias na nova versão mantendo compatibilidade com a anterior.
 
-## 📝 Exemplo de Uso
+## Exemplo de Uso
 
 ### Criar Monitor (v1)
 ```http
@@ -79,7 +79,7 @@ GET /api/v1/monitors
 GET /api/v1/monitors/{id}/status
 ```
 
-## 🔧 Configuração
+## Configuração
 
 O versionamento está configurado no `Program.cs`:
 
@@ -87,20 +87,20 @@ O versionamento está configurado no `Program.cs`:
 - **Assumir versão padrão**: Sim (se não especificar, usa v1.0)
 - **Reportar versões**: Sim (header `api-supported-versions`)
 
-## 📊 Swagger
+## Swagger
 
 O Swagger mostra todas as versões disponíveis:
 - Acesse: `http://localhost:5000/swagger`
 - Selecione a versão no dropdown no topo
 
-## ✅ Boas Práticas
+## Boas Práticas
 
 1. **Mantenha compatibilidade**: Versões antigas devem continuar funcionando
 2. **Documente mudanças**: Use comentários XML para documentar diferenças
 3. **Deprecie gradualmente**: Marque versões antigas como deprecated antes de remover
 4. **Teste todas as versões**: Garanta que todas as versões funcionam
 
-## 🚀 Próximos Passos
+## Próximos Passos
 
 Quando precisar criar a V2:
 1. Criar pasta `Controllers/V2`

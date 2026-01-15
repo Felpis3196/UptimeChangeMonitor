@@ -1,15 +1,15 @@
-# 🥇 Uptime & Change Monitor
+# Uptime & Change Monitor
 
 Um sistema distribuído que monitora se sites estão online e detecta mudanças no conteúdo, usando workers assíncronos, filas e dashboard em tempo real.
 
-## 🎯 Problema que Resolve
+## Problema que Resolve
 
 Empresas precisam saber:
 - Se o site caiu
 - Se alguém mudou conteúdo importante (preço, texto, banner, termos)
 - Quando isso aconteceu
 
-## 🏗️ Arquitetura
+## Arquitetura
 
 ```
 ┌─────────────┐
@@ -36,7 +36,7 @@ Empresas precisam saber:
 └───────────────┘
 ```
 
-## 🔧 Tecnologias
+## Tecnologias
 
 - .NET 8
 - RabbitMQ
@@ -44,7 +44,7 @@ Empresas precisam saber:
 - PostgreSQL
 - React/Next.js (Frontend)
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 UptimeChangeMonitor/
@@ -98,7 +98,7 @@ UptimeChangeMonitor/
 └── UptimeChangeMonitor.sln              # Solution File (.NET)
 ```
 
-## 🚀 Como Executar
+## Como Executar
 
 ### Pré-requisitos
 
@@ -130,14 +130,14 @@ UptimeChangeMonitor/
    npm run dev
    ```
 
-## 📝 MVP
+## MVP
 
-- ✅ Monitorar URL
-- ✅ Verificar se está online
-- ✅ Detectar mudança simples
-- ✅ Dashboard básico
+- Monitorar URL
+- Verificar se está online
+- Detectar mudança simples
+- Dashboard básico
 
-## 🔄 Fluxo de Execução
+## Fluxo de Execução
 
 1. Usuário cadastra um site
 2. API cria um job na fila
@@ -147,7 +147,7 @@ UptimeChangeMonitor/
 6. Salva resultado
 7. Front mostra histórico
 
-## 📈 Evoluções Futuras
+## Evoluções Futuras
 
 - Alertas por e-mail
 - Webhook

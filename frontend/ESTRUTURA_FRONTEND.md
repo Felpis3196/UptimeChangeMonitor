@@ -1,8 +1,8 @@
-# 📁 Guia da Estrutura do Frontend
+# Guia da Estrutura do Frontend
 
 Este documento explica onde cada componente deve ser implementado no frontend.
 
-## 🎯 Estrutura de Pastas Detalhada
+## Estrutura de Pastas Detalhada
 
 ### 1. **app/** (Next.js App Router)
 Páginas e rotas da aplicação.
@@ -212,7 +212,7 @@ Páginas e rotas da aplicação.
 
 ---
 
-## 🔄 Fluxo de Dados
+## Fluxo de Dados
 
 ```
 Component (UI)
@@ -228,7 +228,7 @@ Backend API
 
 ---
 
-## 📦 Dependências Principais
+## Dependências Principais
 
 ### Core
 - **next** - Framework React
@@ -249,7 +249,7 @@ Backend API
 
 ---
 
-## ✅ Checklist de Implementação
+## Checklist de Implementação
 
 ### Setup Inicial
 - [ ] Configurar Next.js
@@ -297,7 +297,7 @@ Backend API
 
 ---
 
-## 🚀 Próximos Passos
+## Próximos Passos
 
 1. Configurar projeto Next.js
 2. Configurar TypeScript e paths

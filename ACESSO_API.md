@@ -1,6 +1,6 @@
-# 🌐 Guia de Acesso à API
+# Guia de Acesso à API
 
-## 📍 URLs de Acesso
+## URLs de Acesso
 
 ### Execução Local (dotnet run)
 
@@ -14,7 +14,7 @@
 - **Swagger UI**: `http://localhost:5000/swagger`
 - **Swagger JSON**: `http://localhost:5000/swagger/v1.0/swagger.json`
 
-## 🔗 Endpoints Principais (v1)
+## Endpoints Principais (v1)
 
 ### Monitores
 - `GET /api/v1/monitors` - Lista todos os monitores
@@ -33,7 +33,7 @@
 - `GET /api/v1/monitors/{monitorId}/changedetections` - Histórico de mudanças
 - `GET /api/v1/monitors/{monitorId}/changedetections/latest` - Última detecção
 
-## 🧪 Testando no Swagger
+## Testando no Swagger
 
 1. Acesse `http://localhost:5000/swagger`
 2. Selecione a versão no dropdown (V1.0)
@@ -43,7 +43,7 @@
 6. Clique em "Execute"
 7. Veja a resposta
 
-## 📝 Exemplo de Requisição
+## Exemplo de Requisição
 
 ### Criar Monitor
 
@@ -66,7 +66,7 @@ Content-Type: application/json
 GET http://localhost:5000/api/v1/monitors
 ```
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
 ### Swagger não abre
 
@@ -98,7 +98,7 @@ GET http://localhost:5000/api/v1/monitors
     - "5002:80"  # Use outra porta
   ```
 
-## 🔒 Segurança
+## Segurança
 
 **Nota**: Em produção, considere:
 - Proteger o Swagger com autenticação

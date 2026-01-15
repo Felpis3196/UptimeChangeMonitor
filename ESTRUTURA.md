@@ -1,8 +1,8 @@
-# 📁 Guia da Estrutura do Projeto
+# Guia da Estrutura do Projeto
 
 Este documento explica onde cada componente deve ser implementado seguindo a arquitetura em camadas.
 
-## 🎯 Estrutura de Camadas
+## Estrutura de Camadas
 
 ### 1. **UptimeChangeMonitor.Domain** (Camada de Domínio)
 Camada mais interna, sem dependências externas. Contém apenas a lógica de negócio pura.
@@ -130,7 +130,7 @@ Workers que consomem mensagens do RabbitMQ.
 
 ---
 
-## 🔄 Fluxo de Dependências
+## Fluxo de Dependências
 
 ```
 API
@@ -144,7 +144,7 @@ Domain
 
 ---
 
-## 📦 Dependências entre Projetos
+## Dependências entre Projetos
 
 ```
 UptimeChangeMonitor.API
@@ -167,7 +167,7 @@ UptimeChangeMonitor.Workers
 
 ---
 
-## ✅ Checklist de Implementação
+## Checklist de Implementação
 
 ### Domain
 - [ ] Criar entidades (Monitor, UptimeCheck, ChangeDetection)
@@ -203,7 +203,7 @@ UptimeChangeMonitor.Workers
 
 ---
 
-## 🚀 Próximos Passos
+## Próximos Passos
 
 1. Implementar entidades no Domain
 2. Configurar DbContext e criar primeira migration

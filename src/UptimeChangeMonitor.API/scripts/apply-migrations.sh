@@ -13,7 +13,7 @@ until pg_isready -h postgres -U postgres; do
   sleep 1
 done
 
-echo "✓ PostgreSQL is ready!"
+echo "PostgreSQL is ready!"
 echo ""
 
 echo "Applying database migrations..."
@@ -29,7 +29,7 @@ else
 fi
 
 if [ ! -d "$MIGRATIONS_DIR" ] || [ "$MIGRATION_FILES" -eq 0 ]; then
-  echo "⚠️  No migrations found! Creating initial migration..."
+  echo "WARNING: No migrations found! Creating initial migration..."
   echo "   Migrations directory: $MIGRATIONS_DIR"
   echo "   Migration files found: $MIGRATION_FILES"
   echo ""
@@ -44,13 +44,13 @@ if [ ! -d "$MIGRATIONS_DIR" ] || [ "$MIGRATION_FILES" -eq 0 ]; then
   MIGRATION_EXIT_CODE=${PIPESTATUS[0]}
   
   if [ $MIGRATION_EXIT_CODE -ne 0 ]; then
-    echo "❌ Failed to create migration!"
+    echo "ERROR: Failed to create migration!"
     echo "Output:"
     cat /tmp/migration_output.log 2>/dev/null || echo "No output captured"
     exit 1
   fi
   
-  echo "✓ Initial migration created successfully!"
+  echo "Initial migration created successfully!"
   echo ""
 fi
 
@@ -69,10 +69,10 @@ LATEST_MIGRATION=$(find "$MIGRATIONS_DIR" -name "*.cs" -type f -name "*_*.cs" ! 
 if [ -n "$LATEST_MIGRATION" ]; then
   echo "Checking if migration '$LATEST_MIGRATION' is already applied..."
   if check_migration_applied "$LATEST_MIGRATION"; then
-    echo "✓ Migration '$LATEST_MIGRATION' is already applied in the database."
+    echo "Migration '$LATEST_MIGRATION' is already applied in the database."
     echo ""
     echo "=========================================="
-    echo "✓ Database is up to date!"
+    echo "Database is up to date!"
     echo "=========================================="
     exit 0
   fi
@@ -90,7 +90,7 @@ if [ $EXIT_CODE -ne 0 ]; then
   # Check if the error is about tables already existing
   if grep -q "already exists" /tmp/update_output.log 2>/dev/null; then
     echo ""
-    echo "⚠️  Warning: Some tables already exist in the database."
+    echo "WARNING: Some tables already exist in the database."
     echo "   This might mean the migration was partially applied or tables were created manually."
     echo ""
     echo "   Attempting to mark migration as applied..."
@@ -123,39 +123,39 @@ if [ $EXIT_CODE -ne 0 ]; then
           # Insert migration record
           if PGPASSWORD=postgres psql -h postgres -U postgres -d UptimeChangeMonitor -c \
             "INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('$MIGRATION_TO_MARK', '$PRODUCT_VERSION') ON CONFLICT DO NOTHING;" 2>/dev/null; then
-            echo "✓ Migration '$MIGRATION_TO_MARK' marked as applied."
+            echo "Migration '$MIGRATION_TO_MARK' marked as applied."
             echo ""
             echo "=========================================="
-            echo "✓ Database migration status updated!"
+            echo "Database migration status updated!"
             echo "=========================================="
             exit 0
           else
-            echo "⚠️  Could not mark migration as applied automatically."
+            echo "WARNING: Could not mark migration as applied automatically."
             echo "   Please check database permissions and connection."
           fi
         else
-          echo "✓ Migration '$MIGRATION_TO_MARK' is already registered."
+          echo "Migration '$MIGRATION_TO_MARK' is already registered."
           echo ""
           echo "=========================================="
-          echo "✓ Database is up to date!"
+          echo "Database is up to date!"
           echo "=========================================="
           exit 0
         fi
       else
-        echo "⚠️  Migration history table does not exist."
+        echo "WARNING: Migration history table does not exist."
         echo "   The database might be in an inconsistent state."
       fi
     fi
     
     echo ""
-    echo "⚠️  Could not automatically resolve the migration state."
+    echo "WARNING: Could not automatically resolve the migration state."
     echo "   Please check the database manually or drop and recreate it."
     echo ""
     echo "   Error details:"
     cat /tmp/update_output.log 2>/dev/null | grep -A 5 "already exists" || echo "   See full output above"
     exit 1
   else
-    echo "❌ Failed to apply migrations!"
+    echo "ERROR: Failed to apply migrations!"
     echo "Output:"
     cat /tmp/update_output.log 2>/dev/null || echo "No output captured"
     exit 1
@@ -164,5 +164,5 @@ fi
 
 echo ""
 echo "=========================================="
-echo "✓ Migrations applied successfully!"
+echo "Migrations applied successfully!"
 echo "=========================================="

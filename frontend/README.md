@@ -1,8 +1,8 @@
-# 🎨 Uptime & Change Monitor - Frontend
+# Uptime & Change Monitor - Frontend
 
 Dashboard em tempo real para monitoramento de sites e detecção de mudanças.
 
-## 🚀 Tecnologias
+## Tecnologias
 
 - **Next.js 14** - Framework React com App Router
 - **TypeScript** - Tipagem estática
@@ -12,7 +12,7 @@ Dashboard em tempo real para monitoramento de sites e detecção de mudanças.
 - **Zustand** - Gerenciamento de estado local
 - **Axios** - Cliente HTTP
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 frontend/
@@ -69,7 +69,7 @@ frontend/
     └── (estilos customizados)
 ```
 
-## 🔧 Scripts
+## Scripts
 
 ```bash
 # Desenvolvimento
@@ -88,7 +88,7 @@ npm run lint
 npm run type-check
 ```
 
-## 🌐 Variáveis de Ambiente
+## Variáveis de Ambiente
 
 Crie um arquivo `.env.local`:
 
@@ -96,20 +96,20 @@ Crie um arquivo `.env.local`:
 NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
-## 📦 Instalação
+## Instalação
 
 ```bash
 npm install
 ```
 
-## 🎯 Funcionalidades (MVP)
+## Funcionalidades (MVP)
 
-- ✅ Lista de monitores
-- ✅ Status em tempo real (Online/Offline)
-- ✅ Detalhes do monitor
-- ✅ Histórico de verificações
-- ✅ Gráficos de uptime e tempo de resposta
-- ✅ Dashboard com resumo geral
+- Lista de monitores
+- Status em tempo real (Online/Offline)
+- Detalhes do monitor
+- Histórico de verificações
+- Gráficos de uptime e tempo de resposta
+- Dashboard com resumo geral
 
 ## 📱 Rotas
 
@@ -117,7 +117,7 @@ npm install
 - `/monitors` - Lista de monitores
 - `/monitors/[id]` - Detalhes do monitor específico
 
-## 🎨 Componentes Principais
+## Componentes Principais
 
 ### Layout
 - **Header** - Cabeçalho com navegação
@@ -137,7 +137,7 @@ npm install
 ### Common
 - Componentes reutilizáveis (Button, Card, Loading, Error)
 
-## 🔄 Integração com API
+## Integração com API
 
 O frontend consome a API REST do backend:
 
@@ -149,7 +149,7 @@ O frontend consome a API REST do backend:
 - `GET /api/monitors/{id}/status` - Status atual
 - `GET /api/monitors/{id}/history` - Histórico
 
-## 📈 Próximas Evoluções
+## Próximas Evoluções
 
 - Alertas em tempo real (WebSocket)
 - Filtros e busca avançada

@@ -1,10 +1,10 @@
-# 🗄️ Como Aplicar Migrations
+# Como Aplicar Migrations
 
-## ⚠️ Erro: "relation 'Monitors' does not exist"
+## Erro: "relation 'Monitors' does not exist"
 
 Este erro significa que as **migrations não foram aplicadas** no banco de dados. 
 
-## 🐳 Container Exclusivo de Migrations
+## Container Exclusivo de Migrations
 
 O projeto agora possui um **container exclusivo** para aplicar migrations automaticamente. Ele roda antes da API iniciar e garante que o banco esteja atualizado.
 
@@ -24,7 +24,7 @@ docker-compose up migrations
 docker-compose up --build migrations
 ```
 
-## 🐳 Opção 1: Aplicar via Docker (Recomendado)
+## Opção 1: Aplicar via Docker (Recomendado)
 
 ### Passo 1: Criar a migration (se ainda não criou)
 
@@ -54,7 +54,7 @@ docker exec -it uptime_api dotnet tool install --global dotnet-ef
 docker exec -it uptime_api bash -c "cd /src/src/UptimeChangeMonitor.API && dotnet ef database update --project ../UptimeChangeMonitor.Infrastructure --startup-project . --no-build"
 ```
 
-## 💻 Opção 2: Aplicar Localmente (Desenvolvimento)
+## Opção 2: Aplicar Localmente (Desenvolvimento)
 
 ### Pré-requisitos
 - PostgreSQL rodando (via Docker ou local)
@@ -78,7 +78,7 @@ docker exec -it uptime_api bash -c "cd /src/src/UptimeChangeMonitor.API && dotne
    dotnet ef database update --project ../UptimeChangeMonitor.Infrastructure --startup-project .
    ```
 
-## 🔄 Verificar se as migrations foram aplicadas
+## Verificar se as migrations foram aplicadas
 
 ```bash
 # Conecte ao PostgreSQL
@@ -94,14 +94,14 @@ docker exec -it uptime_postgres psql -U postgres -d UptimeChangeMonitor
 # - __EFMigrationsHistory
 ```
 
-## ✅ Após aplicar as migrations
+## Após aplicar as migrations
 
 A API deve funcionar normalmente:
 - Acesse: `http://localhost:5000/swagger`
 - Teste criar um monitor via Swagger
 - Verifique se os dados são salvos no banco
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### Erro: "dotnet ef not found"
 ```bash
