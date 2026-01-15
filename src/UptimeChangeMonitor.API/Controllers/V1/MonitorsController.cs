@@ -143,7 +143,7 @@ public class MonitorsController : ControllerBase
                     c.IsOnline,
                     c.ResponseTimeMs,
                     c.ResponseTimeFormatted,
-                    c.CheckedAt,
+                    CheckedAt = c.CheckedAtFormatted ?? c.CheckedAt.ToString("yyyy-MM-dd HH:mm:ss UTC"),
                     c.CheckedAtFormatted,
                     c.TimeAgo
                 }),
@@ -151,7 +151,7 @@ public class MonitorsController : ControllerBase
                 {
                     c.ChangeType,
                     c.ChangeTypeDescription,
-                    c.DetectedAt,
+                    DetectedAt = c.DetectedAtFormatted ?? c.DetectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC"),
                     c.DetectedAtFormatted,
                     c.TimeAgo,
                     c.HasSignificantChange
@@ -160,8 +160,8 @@ public class MonitorsController : ControllerBase
             health = healthScore,
             metadata = new
             {
-                retrievedAt = DateTime.UtcNow,
-                monitorId = id
+                RetrievedAt = DateTime.UtcNow,
+                MonitorId = id
             }
         });
     }
@@ -170,7 +170,14 @@ public class MonitorsController : ControllerBase
     {
         var checks = recentChecks.ToList();
         if (!checks.Any())
-            return new { score = 0, level = "unknown", description = "Sem dados suficientes" };
+            return new 
+            { 
+                score = 0, 
+                level = "unknown", 
+                description = "Sem dados suficientes",
+                uptimePercentage = 0.0,
+                averageResponseTime = (double?)null
+            };
         
         var onlineCount = checks.Count(c => c.IsOnline);
         var uptimePercentage = (onlineCount * 100.0 / checks.Count);
@@ -268,7 +275,7 @@ public class MonitorsController : ControllerBase
             monitors = statusListArray,
             metadata = new
             {
-                retrievedAt = DateTime.UtcNow
+                RetrievedAt = DateTime.UtcNow
             }
         });
     }

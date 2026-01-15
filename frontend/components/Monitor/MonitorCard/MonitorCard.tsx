@@ -75,11 +75,11 @@ export default function MonitorCard({
   const config = statusConfig[status]
 
   return (
-    <Card glow={config.glow} className="hover:scale-[1.02] transition-transform duration-200">
+    <Card glow={config.glow} className="hover:scale-[1.02] transition-transform duration-200 h-full">
       <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-100 mb-1">{name}</h3>
-          <p className="text-sm text-dark-400 truncate">{url}</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold text-gray-100 mb-1 truncate">{name}</h3>
+          <p className="text-sm text-dark-400 truncate" title={url}>{url}</p>
         </div>
         <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg ${config.bg} ${config.border} border`}>
           <span className={config.color}>{config.icon}</span>

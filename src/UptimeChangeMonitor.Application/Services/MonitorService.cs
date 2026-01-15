@@ -108,6 +108,10 @@ public class MonitorService : IMonitorService
 
         var latestUptimeCheck = await _uptimeCheckRepository.GetLatestByMonitorIdAsync(id);
         var latestChange = await _changeDetectionRepository.GetLatestByMonitorIdAsync(id);
+        
+        // Calcular uptime percentage baseado no histórico
+        var uptimeChecks = await _uptimeCheckRepository.GetByMonitorIdAsync(id);
+        var uptimePercentage = CalculateUptimePercentage(uptimeChecks);
 
         var statusDto = new MonitorStatusDto
         {
@@ -118,7 +122,8 @@ public class MonitorService : IMonitorService
             LastResponseTimeMs = latestUptimeCheck?.ResponseTimeMs,
             LastCheckedAt = latestUptimeCheck?.CheckedAt,
             IsOnline = latestUptimeCheck?.Status == UptimeStatus.Online,
-            LastChangeDetectedAt = latestChange?.DetectedAt
+            LastChangeDetectedAt = latestChange?.DetectedAt,
+            UptimePercentage = uptimePercentage
         };
 
         // Preencher propriedades descritivas
@@ -136,6 +141,10 @@ public class MonitorService : IMonitorService
         {
             var latestUptimeCheck = await _uptimeCheckRepository.GetLatestByMonitorIdAsync(monitor.Id);
             var latestChange = await _changeDetectionRepository.GetLatestByMonitorIdAsync(monitor.Id);
+            
+            // Calcular uptime percentage baseado no histórico
+            var uptimeChecks = await _uptimeCheckRepository.GetByMonitorIdAsync(monitor.Id);
+            var uptimePercentage = CalculateUptimePercentage(uptimeChecks);
 
             var statusDto = new MonitorStatusDto
             {
@@ -146,7 +155,8 @@ public class MonitorService : IMonitorService
                 LastResponseTimeMs = latestUptimeCheck?.ResponseTimeMs,
                 LastCheckedAt = latestUptimeCheck?.CheckedAt,
                 IsOnline = latestUptimeCheck?.Status == UptimeStatus.Online,
-                LastChangeDetectedAt = latestChange?.DetectedAt
+                LastChangeDetectedAt = latestChange?.DetectedAt,
+                UptimePercentage = uptimePercentage
             };
 
             // Preencher propriedades descritivas
@@ -268,5 +278,15 @@ public class MonitorService : IMonitorService
         
         var hours = seconds / 3600;
         return $"{hours} hora{(hours != 1 ? "s" : "")}";
+    }
+    
+    private static double? CalculateUptimePercentage(IEnumerable<Domain.Entities.UptimeCheck> checks)
+    {
+        var checksList = checks.ToList();
+        if (!checksList.Any())
+            return null;
+        
+        var onlineCount = checksList.Count(c => c.Status == UptimeStatus.Online);
+        return Math.Round((onlineCount * 100.0 / checksList.Count), 2);
     }
 }

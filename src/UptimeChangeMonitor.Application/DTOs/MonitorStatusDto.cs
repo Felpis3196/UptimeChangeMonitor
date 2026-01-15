@@ -19,4 +19,5 @@ public class MonitorStatusDto
     public string? LastChangeDetectedAtFormatted { get; set; }
     public string? TimeSinceLastChange { get; set; }
     public bool HasRecentChanges { get; set; }
+    public double? UptimePercentage { get; set; }
 }

@@ -1,16 +1,24 @@
 // Type Definitions
 
 export interface Monitor {
-  id: string
-  name: string
-  url: string
-  status: MonitorStatus
-  checkIntervalSeconds: number
-  monitorUptime: boolean
-  monitorChanges: boolean
-  createdAt: string
-  updatedAt: string
-  lastCheckedAt?: string
+  Id: string
+  Name: string
+  Url: string
+  Status: MonitorStatus
+  StatusDescription: string
+  CheckIntervalSeconds: number
+  CheckIntervalFormatted: string
+  MonitorUptime: boolean
+  MonitorChanges: boolean
+  CreatedAt: string
+  CreatedAtFormatted: string
+  CreatedAtTimeAgo: string
+  UpdatedAt: string
+  UpdatedAtFormatted: string
+  UpdatedAtTimeAgo: string
+  LastCheckedAt?: string
+  LastCheckedAtFormatted?: string
+  LastCheckedAtTimeAgo?: string
 }
 
 export enum MonitorStatus {
@@ -20,18 +28,19 @@ export enum MonitorStatus {
 }
 
 export interface UptimeCheck {
-  id: string
-  monitorId: string
-  status: UptimeStatus
-  responseTimeMs?: number
-  statusCode?: number
-  checkedAt: string
-  statusDescription?: string
-  isOnline?: boolean
-  responseTimeFormatted?: string
-  statusCodeDescription?: string
-  checkedAtFormatted?: string
-  timeAgo?: string
+  Id: string
+  MonitorId: string
+  Status: UptimeStatus
+  StatusDescription: string
+  IsOnline: boolean
+  ResponseTimeMs?: number
+  ResponseTimeFormatted?: string
+  StatusCode?: number
+  StatusCodeDescription?: string
+  ErrorMessage?: string
+  CheckedAt: string
+  CheckedAtFormatted: string
+  TimeAgo: string
 }
 
 export enum UptimeStatus {
@@ -42,17 +51,17 @@ export enum UptimeStatus {
 }
 
 export interface ChangeDetection {
-  id: string
-  monitorId: string
-  changeType: ChangeType
-  previousContentHash?: string
-  currentContentHash: string
-  changeDescription?: string
-  detectedAt: string
-  changeTypeDescription?: string
-  hasSignificantChange?: boolean
-  detectedAtFormatted?: string
-  timeAgo?: string
+  Id: string
+  MonitorId: string
+  ChangeType: ChangeType
+  ChangeTypeDescription: string
+  PreviousContentHash?: string
+  CurrentContentHash?: string
+  ChangeDescription?: string
+  HasSignificantChange: boolean
+  DetectedAt: string
+  DetectedAtFormatted: string
+  TimeAgo: string
 }
 
 export enum ChangeType {
@@ -62,15 +71,20 @@ export enum ChangeType {
 }
 
 export interface MonitorStatusDto {
-  status: MonitorStatus
-  lastResponseTime?: number
-  lastCheckedAt?: string
-  lastChangeDetectedAt?: string
-  statusDescription?: string
-  lastResponseTimeFormatted?: string
-  lastCheckedAtFormatted?: string
-  timeSinceLastCheck?: string
-  lastChangeDetectedAtFormatted?: string
-  timeSinceLastChange?: string
-  hasRecentChanges?: boolean
+  MonitorId: string
+  MonitorName: string
+  Url: string
+  CurrentStatus?: UptimeStatus
+  IsOnline: boolean
+  StatusDescription?: string
+  LastResponseTimeMs?: number
+  LastResponseTimeFormatted?: string
+  LastCheckedAt?: string
+  LastCheckedAtFormatted?: string
+  TimeSinceLastCheck?: string
+  LastChangeDetectedAt?: string
+  LastChangeDetectedAtFormatted?: string
+  TimeSinceLastChange?: string
+  HasRecentChanges: boolean
+  UptimePercentage?: number
 }
